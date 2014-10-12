@@ -43,14 +43,15 @@ class InfraHelperWorkflow
     futures = []
 
     if options[:myEvent]=="autoscaling:EC2_INSTANCE_LAUNCH"
-      puts "Reserving a car for customer\n" unless is_replaying?
+      puts "Setting up new instance to be a NAT instance\n" unless is_replaying?
       # The activity client can be used to schedule activities
       # asynchronously by using the send_async method
       futures << client.send_async(:assignEIP, options[:myInstance])
       futures << client.send_async(:setSrcDest, options[:myInstance])
+      puts "Try and set this instance to be the default route. Will fail if another instance is already doing this.\n" unless is_replaying?
       futures << client.send_async(:setRoute, options[:myASG, :myInstance])
     elsif options[:myEvent]=="autoscaling:EC2_INSTANCE_TERMINATE"
-      puts "Reserving air ticket\n" unless is_replaying?
+      puts "Try and set this instance to be the default route. Will fail if another instance is already doing this.\n" unless is_replaying?
       futures << client.send_async(:setRoute, options[:myASG, :myInstance])
     end
 
