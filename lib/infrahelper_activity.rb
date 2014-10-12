@@ -43,7 +43,8 @@ class InfraHelperActivity
 
   # This activity can be used to set the instance as the default route for a route table
   def setRoute(myASG, myInstance)
-    puts "Set instance as default route for RouteTable: #{customer_id}\n"
+  	routeEndPoint = myInstance
+    puts "Set instance as default route for RouteTable: #{routeEndPoint}\n"
   end
 
 end

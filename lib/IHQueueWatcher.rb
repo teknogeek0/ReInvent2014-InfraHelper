@@ -19,7 +19,7 @@ require_relative 'infrahelper_activity'
 require_relative 'infrahelper_workflow'
 
 ## load from config our environment variables
-CONFIG = YAML.load_file("IHconfig.yml") unless defined? CONFIG
+CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
 
 ## create new SQS client
 sqs = AWS::SQS.new(:region=> "sqs.#{CONFIG['Region']}.amazonaws.com")

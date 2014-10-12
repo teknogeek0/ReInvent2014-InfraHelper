@@ -23,13 +23,14 @@ require 'aws-sdk'
 require 'json'
 
 ## load from config our environment variables
-CONFIG = YAML.load_file("IHconfig.yml") unless defined? CONFIG
+CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
+IH_CONFIG = JSON.parse(File.read("infrahelper.json"))
 
 # These are utilities that are common
 module SharedUtils
 
   def setup_domain(domain_name)
-    swf = AWS::SimpleWorkflow.new
+    swf = AWS::SimpleWorkflow.new(region: "#{CONFIG['Region']}")
     domain = swf.domains[domain_name]
     unless domain.exists?
         swf.domains.create(domain_name, 10)
@@ -58,11 +59,11 @@ end
 class InfraHelperUtils
   include SharedUtils
 
-  WF_VERSION = CONFIG['IHWorkflow_VERSION']
-  ACTIVITY_VERSION = CONFIG['IHActivity_VERSION']
+  WF_VERSION = "1.0"
+  ACTIVITY_VERSION = "1.0"
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
-  DOMAIN = CONFIG['IHSWFDomain']
+  DOMAIN = IH_CONFIG["domain"]["name"]
 
   def initialize
     @domain = setup_domain(DOMAIN)
