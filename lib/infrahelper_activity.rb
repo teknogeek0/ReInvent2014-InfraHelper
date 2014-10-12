@@ -44,6 +44,10 @@ class InfraHelperActivity
   # This activity can be used to set the instance as the default route for a route table
   def setRoute(myASG, myInstance)
   	routeEndPoint = myInstance
+  	group = auto_scaling.groups[myASG]
+		group.ec2_instances.each do |instance|
+  		puts instance.id
+		end
     puts "Set instance as default route for RouteTable: #{routeEndPoint}\n"
   end
 
