@@ -14,7 +14,7 @@
 #
 
 ## require what we'll need
-require_relative 'infrahelper_utils.rb'
+require_relative '../infrahelper_utils.rb'
 
 class InfraHelperActivity
  extend AWS::Flow::Activities 
