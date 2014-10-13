@@ -29,7 +29,7 @@ IH_CONFIG = JSON.parse(File.read("infrahelper.json"))
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
 logger = Logger.new(logFile)
-logger.formatter = proc do |serverity, datetime, progname, msg|
+logger.formatter = proc do |severity, datetime, progname, msg|
   "#{datetime}: #{msg}\n"
 end
 
