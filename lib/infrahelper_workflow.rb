@@ -37,30 +37,30 @@ class InfraHelperWorkflow
   # This is the entry point for the workflow
   def fix_NAT options
 
-    puts "Workflow has started\n" unless is_replaying?
+  	logger.info('workflow') { "Workflow has started" } unless is_replaying?
     # This array will hold all futures that are created when asynchronous
     # activities are scheduled
     futures = []
 
     if options[:myEvent]=="autoscaling:EC2_INSTANCE_LAUNCH"
-      puts "Setting up new instance to be a NAT instance\n" unless is_replaying?
+    	logger.info('workflow') { "Setting up new instance to be a NAT instance" } unless is_replaying?
       # The activity client can be used to schedule activities
       # asynchronously by using the send_async method
       futures << client.send_async(:assignEIP, options[:myInstance])
       futures << client.send_async(:setSrcDest, options[:myInstance])
-      puts "Try and set this instance to be the default route. Will fail if another instance is already doing this.\n" unless is_replaying?
+      logger.info('workflow') { "Try and set this instance to be the default route. Will fail if another instance is already doing this." } unless is_replaying?
       futures << client.send_async(:setRoute, options[:myASG, :myInstance])
     elsif options[:myEvent]=="autoscaling:EC2_INSTANCE_TERMINATE"
-      puts "Try and set this instance to be the default route. Will fail if another instance is already doing this.\n" unless is_replaying?
+      logger.info('workflow') { "Try and set this instance to be the default route. Will fail if another instance is already doing this." } unless is_replaying?
       futures << client.send_async(:setRoute, options[:myASG, :myInstance])
     end
 
-    puts "Waiting for activities to complete\n" unless is_replaying?
+    logger.info('workflow') { "Waiting for activities to complete" } unless is_replaying?
     # wait_for_all is a flow construct that will wait on the array of
     # futures passed to it
     wait_for_all(futures)
 
-    puts "Workflow has completed\n" unless is_replaying?
+    logger.info('workflow') { "Workflow has completed" } unless is_replaying?
   end
 
   # Helper method to check if Flow is replaying the workflow. This is used to

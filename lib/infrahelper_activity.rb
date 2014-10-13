@@ -33,12 +33,16 @@ class InfraHelperActivity
 
   # This activity can be used to assign an EIP to an instance
   def assignEIP(myInstance)
-    puts "Assigning an EIP to instance ID: #{myInstance}\n"
+  	logger.info('assignEIP_activity') { "Assigning an EIP to instance ID: #{myInstance}" } unless is_replaying?
+  	##assume something is happening here
+  	logger.info('assignEIP_activity') { "Finished activity" } unless is_replaying?
   end
 
   # This activity can be used to set the SRC/DEST flag
   def setSrcDest(myInstance)
-    puts "Setting SRC/DEST for instance ID: #{myInstance}\n"
+    logger.info('setSrcDest_activity') { "Setting SRC/DEST for instance ID: #{myInstance}" } unless is_replaying?
+    ##assume something is happening here
+  	logger.info('setSrcDest_activity') { "Finished activity" } unless is_replaying?
   end
 
   # This activity can be used to set the instance as the default route for a route table
@@ -46,9 +50,12 @@ class InfraHelperActivity
   	routeEndPoint = myInstance
   	group = auto_scaling.groups[myASG]
 		group.ec2_instances.each do |instance|
-  		puts instance.id
+  		##puts instance.id
+  		## we'll do something useful here
 		end
-    puts "Set instance as default route for RouteTable: #{routeEndPoint}\n"
+    logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" } unless is_replaying?
+    ##assume something is happening here
+  	logger.info('setRoute_activity') { "Finished activity" } unless is_replaying?
   end
 
 end
