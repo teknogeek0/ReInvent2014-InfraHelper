@@ -68,7 +68,7 @@ class InfraHelperUtils
   ACTIVITY_VERSION = "1.0"
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
-  DOMAIN = IH_CONFIG["domain"]["name"]
+  DOMAIN = $IH_CONFIG["domain"]["name"]
 
   def initialize
     @domain = setup_domain(DOMAIN)

@@ -21,16 +21,16 @@ require_relative '../infrahelper_utils'
 ##CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
 
 ## create new SQS client
-sqs = AWS::SQS.new(:region=> "sqs.#{CONFIG['Region']}.amazonaws.com")
+sqs = AWS::SQS.new(:region=> "sqs.#{$CONFIG['Region']}.amazonaws.com")
 ## connect to our queue, if not, fail out.
 begin
-  queue = sqs.queues["#{CONFIG['IHQueue']}"]
+  queue = sqs.queues["#{$CONFIG['IHQueue']}"]
 rescue AWS::SQS::Errors::InvalidParameterValue => e
-  logger.error('queuewatcher') { "Invalid queue name '#{CONFIG['IHQueue']}'. "+e.message }
+  $logger.error('queuewatcher') { "Invalid queue name '#{$CONFIG['IHQueue']}'. "+e.message }
   exit 1
 end
 
-logger.info('queuewatcher') { "Starting to poll for new events from queue: '#{CONFIG['IHQueue']}'" }
+$logger.info('queuewatcher') { "Starting to poll for new events from queue: '#{$CONFIG['IHQueue']}'" }
 queue.poll() do |msg|
 	##if here we have a message, lets now parse it
 	sns_msg = msg.as_sns_message
@@ -43,7 +43,7 @@ queue.poll() do |msg|
 			#get the other variables we'll need from the parsed msg
 			myASG = parsed_msg["AutoScalingGroupName"]
 			myInstance = parsed_msg["EC2InstanceId"]
-	  	logger.info('queuewatcher') { "Found event: '#{CONFIG['myEvent']}' in AutoScalign Group:'#{CONFIG['myASG']}' affecting instance: '#{CONFIG['myInstance']}'" }
+	  	$logger.info('queuewatcher') { "Found event: '#{myEvent}' in AutoScalign Group:'#{myASG}' affecting instance: '#{myInstance}'" }
 
 	  	if !myASG.empty? && !myInstance.empty?
 	  		##now lets start our workflow
@@ -52,19 +52,19 @@ queue.poll() do |msg|
 					myASG: myASG,
 					myInstance: myInstance
 				)
-				logger.info('queuewatcher') { "Workflow initiated" }
+				$logger.info('queuewatcher') { "Workflow initiated" }
 			else
-				logger.error('queuewatcher') { "Something has gone wrong. Didn't find an ASG or instance as part of this message." }
+				$logger.error('queuewatcher') { "Something has gone wrong. Didn't find an ASG or instance as part of this message." }
 	  	end
 		when "autoscaling:EC2_INSTANCE_LAUNCH_ERROR","autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
 			#log that we got an error performing an action
-			logger.error('queuewatcher') { "RUH ROH. We got an error doing the following: '#{CONFIG['myEvent']}'." }
+			$logger.error('queuewatcher') { "RUH ROH. We got an error doing the following: '#{myEvent}'." }
 		when " autoscaling:TEST_NOTIFICATION "
 			#this is just a test, so we don't really care
-			logger.info('queuewatcher') { "This is a test of the new autoscaling notifcation SNS to SQS setup. Good work!" }
+			$logger.info('queuewatcher') { "This is a test of the new autoscaling notifcation SNS to SQS setup. Good work!" }
 		else
 			#assume an error here
-			logger.error('queuewatcher') { "Something else went wrong here. Either we couldn't parse a message properly or who knows!" }
+			$logger.error('queuewatcher') { "Something else went wrong here. Either we couldn't parse a message properly or who knows!" }
 	end
 end
 
