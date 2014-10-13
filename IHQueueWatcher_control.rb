@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 #
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -15,4 +16,4 @@
 
 require 'daemons'
 
-Daemons.run('../lib/IHQueueWatcher.rb')
+Daemons.run('./lib/IHQueueWatcher.rb')

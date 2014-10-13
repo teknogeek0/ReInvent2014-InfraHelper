@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 #
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -17,7 +18,7 @@
 require_relative '../infrahelper_utils'
 
 ## load from config our environment variables
-CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
+##CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
 
 ## create new SQS client
 sqs = AWS::SQS.new(:region=> "sqs.#{CONFIG['Region']}.amazonaws.com")

@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 #
 # Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -23,15 +24,12 @@ require 'aws-sdk'
 require 'json'
 
 ## load from config our environment variables
-CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
-IH_CONFIG = JSON.parse(File.read("infrahelper.json"))
+$CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
+$IH_CONFIG = JSON.parse(File.read("infrahelper.json"))
 
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
-logger = Logger.new(logFile)
-logger.formatter = proc do |severity, datetime, progname, msg|
-  "#{datetime}: #{msg}\n"
-end
+$logger = Logger.new(logFile)
 
 # These are utilities that are common
 module SharedUtils
