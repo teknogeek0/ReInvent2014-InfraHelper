@@ -24,8 +24,8 @@ require 'aws-sdk'
 require 'json'
 
 ## load from config our environment variables
-$CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
-$IH_CONFIG = JSON.parse(File.read("infrahelper.json"))
+$CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless defined? CONFIG
+$IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
 
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
