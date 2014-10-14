@@ -16,4 +16,4 @@
 
 require 'daemons'
 
-Daemons.run('./lib/IHQueueWatcher.rb')
+Daemons.run('./lib/IHQueueWatcher.rb', :dir_mode => :system)
