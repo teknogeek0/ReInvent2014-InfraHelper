@@ -74,3 +74,4 @@ end
 
 # Start a WorkflowWorker to work on the InfraHelperWorkflow tasks
 InfraHelperUtils.new.workflow_worker.start if $0 == __FILE__
+$logger.info('workflow') { "Starting our workflow process against SWF Domain: '#{$IH_CONFIG["domain"]["name"]}'" }

@@ -63,3 +63,4 @@ end
 
 # Start an ActivityWorker to work on the InfraHelperActivity tasks
 InfraHelperUtils.new.activity_worker.start if $0 == __FILE__
+$logger.info('activities') { "Starting our activity process against SWF Domain: '#{$IH_CONFIG["domain"]["name"]}'" }
