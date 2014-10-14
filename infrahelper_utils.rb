@@ -30,6 +30,7 @@ $IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
 $logger = Logger.new(logFile)
+$logger.auto_flushing = 1
 
 # These are utilities that are common
 module SharedUtils
