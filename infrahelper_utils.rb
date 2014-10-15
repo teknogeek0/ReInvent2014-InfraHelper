@@ -22,6 +22,7 @@ require 'logger'
 require 'yaml'
 require 'aws-sdk'
 require 'json'
+require 'socket'
 
 ## load from config our environment variables
 $CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless defined? CONFIG
@@ -31,6 +32,9 @@ $IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
 logFile.sync = true
 $logger = Logger.new(logFile)
+$logger.formatter = proc do |severity, datetime, progname, msg|
+   "#{Socket.gethostname} [#{datetime.strftime('%d/%b/%Y:%H:%M:%S %z')} #{progname} #{severity} ##{Process.pid}]: #{msg}\n"
+end
 
 # These are utilities that are common
 module SharedUtils
