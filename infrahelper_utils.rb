@@ -33,7 +33,7 @@ logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND 
 logFile.sync = true
 $logger = Logger.new(logFile)
 $logger.formatter = proc do |severity, datetime, progname, msg|
-   "#{Socket.gethostname} [#{datetime.strftime('%d/%b/%Y:%H:%M:%S %z')} #{progname} #{severity} ##{Process.pid}]: #{msg}\n"
+   "#{Socket.gethostname} [#{datetime.strftime('%d/%b/%Y:%H:%M:%S %z')}] #{progname} #{severity} ##{Process.pid}: #{msg}\n"
 end
 
 # These are utilities that are common
