@@ -17,7 +17,7 @@
 ## require what we'll need
 
 require 'bundler/setup'
-require 'aws/decider'
+require 'aws'
 require 'logger'
 require 'yaml'
 require 'aws-sdk'
