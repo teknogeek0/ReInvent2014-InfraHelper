@@ -29,7 +29,7 @@ $CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless def
 $IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
 
 # default region for all services
-AWS.config[:region] = "#{$CONFIG['Region']}"
+AWS.config({:region => "#{$CONFIG['Region']}"})
 
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
