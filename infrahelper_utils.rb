@@ -73,8 +73,8 @@ end
 class InfraHelperUtils
   include SharedUtils
 
-  WF_VERSION = "1.1"
-  ACTIVITY_VERSION = "1.1"
+  WF_VERSION = "1.2"
+  ACTIVITY_VERSION = "1.2"
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
   DOMAIN = $IH_CONFIG["domain"]["name"]
