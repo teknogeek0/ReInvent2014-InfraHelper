@@ -17,6 +17,8 @@
 ## require what we'll need
 require_relative '../infrahelper_utils.rb'
 
+AWS.config({:region => "#{$CONFIG['Region']}"})
+
 class InfraHelperActivity
  extend AWS::Flow::Activities 
 

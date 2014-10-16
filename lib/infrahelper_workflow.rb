@@ -19,6 +19,8 @@
 require_relative 'infrahelper_activity'
 require_relative '../infrahelper_utils'
 
+AWS.config({:region => "#{$CONFIG['Region']}"})
+
 class InfraHelperWorkflow
   extend AWS::Flow::Workflows
 

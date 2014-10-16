@@ -17,6 +17,8 @@
 ## require what we'll need
 require_relative '../infrahelper_utils'
 
+AWS.config({:region => "#{$CONFIG['Region']}"})
+
 ## load from config our environment variables
 ##CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG
 
