@@ -17,7 +17,7 @@
 ## require what we'll need
 
 require 'bundler/setup'
-require 'aws'
+require 'aws/decider'
 require 'logger'
 require 'yaml'
 require 'aws-sdk'
@@ -25,7 +25,7 @@ require 'json'
 require 'socket'
 
 # default region for all service
-Aws.config[:region] = "#{CONFIG['Region']}"
+AWS.config[:region] = "#{CONFIG['Region']}"
 
 ## load from config our environment variables
 $CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless defined? CONFIG
