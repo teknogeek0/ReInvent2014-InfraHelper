@@ -42,6 +42,7 @@ end
 # These are utilities that are common
 module SharedUtils
 
+  AWS.config({:region => "#{$CONFIG['Region']}"})
   def setup_domain(domain_name)
     swf = AWS::SimpleWorkflow.new()
     domain = swf.domains[domain_name]
