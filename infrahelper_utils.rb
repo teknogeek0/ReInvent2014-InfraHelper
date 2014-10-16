@@ -24,6 +24,9 @@ require 'aws-sdk'
 require 'json'
 require 'socket'
 
+# default region for all service
+Aws.config[:region] = "#{CONFIG['Region']}"
+
 ## load from config our environment variables
 $CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless defined? CONFIG
 $IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
@@ -40,7 +43,7 @@ end
 module SharedUtils
 
   def setup_domain(domain_name)
-    swf = AWS::SimpleWorkflow.new(region: "#{CONFIG['Region']}")
+    swf = AWS::SimpleWorkflow.new()
     domain = swf.domains[domain_name]
     unless domain.exists?
         swf.domains.create(domain_name, 10)

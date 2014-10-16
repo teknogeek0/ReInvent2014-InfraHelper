@@ -47,6 +47,7 @@ queue.poll() do |msg|
 
 	  	if !myASG.empty? && !myInstance.empty?
 	  		##now lets start our workflow
+	  		$logger.info('queuewatcher') { "Starting Workflow" }
 				InfraHelperUtils.new.workflow_client.start_execution(
 					myEvent: myEvent,
 					myASG: myASG,
@@ -59,7 +60,7 @@ queue.poll() do |msg|
 		when "autoscaling:EC2_INSTANCE_LAUNCH_ERROR","autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
 			#log that we got an error performing an action
 			$logger.error('queuewatcher') { "RUH ROH. We got an error doing the following: '#{myEvent}'." }
-		when " autoscaling:TEST_NOTIFICATION "
+		when "autoscaling:TEST_NOTIFICATION"
 			#this is just a test, so we don't really care
 			$logger.info('queuewatcher') { "This is a test of the new autoscaling notifcation SNS to SQS setup. Good work!" }
 		else
