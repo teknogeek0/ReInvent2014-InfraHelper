@@ -20,6 +20,8 @@ require_relative '../infrahelper_utils.rb'
 class InfraHelperActivity
  extend AWS::Flow::Activities 
 
+  AWS.config({region: "#{$CONFIG['Region']}"})
+
 	# The activity method is used to define activities. It accepts a list of names
   # of activities and a block specifying registration options for those
   # activities
@@ -64,7 +66,7 @@ end
 # Start an ActivityWorker to work on the InfraHelperActivity tasks
 InfraHelperUtils.new.activity_worker.start if $0 == __FILE__
 $logger.info('activities') { "Starting our activity process against SWF Domain: '#{$IH_CONFIG["domain"]["name"]}'" }
-$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my config region: #{$CONFIG['Region']}" }
-$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my region: #{swf.config.region}" }
-$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my swf region: #{swf.config.simple_workflow_region}" }
+#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my config region: #{$CONFIG['Region']}" }
+#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
+#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my region: #{swf.config.region}" }
+#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my swf region: #{swf.config.simple_workflow_region}" }

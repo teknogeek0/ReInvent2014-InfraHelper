@@ -22,6 +22,8 @@ require_relative '../infrahelper_utils'
 class InfraHelperWorkflow
   extend AWS::Flow::Workflows
 
+  AWS.config({region: "#{$CONFIG['Region']}"})
+
 	# Use the workflow method to define workflow entry point.
   workflow :fix_NAT do
     {

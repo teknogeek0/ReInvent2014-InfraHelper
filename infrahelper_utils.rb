@@ -82,6 +82,7 @@ class InfraHelperUtils
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
   DOMAIN = $IH_CONFIG["domain"]["name"]
+  AWS.config({region: "#{$CONFIG['Region']}"})
 
   def initialize
     @domain = setup_domain(DOMAIN)
@@ -90,8 +91,8 @@ class InfraHelperUtils
   def activity_worker
     $logger.info('utils') { "DEBUG: inside activity_worker. this is my config region: #{$CONFIG['Region']}" }
     $logger.info('utils') { "DEBUG: inside activity_worker. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my region: #{swf.config.region}" }
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my swf region: #{swf.config.simple_workflow_region}" }
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my region: #{@domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_activity_worker(@domain, InfraHelperActivity, ACTIVITY_TASKLIST)
   end
 
