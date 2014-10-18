@@ -44,15 +44,17 @@ module SharedUtils
 
 
   def setup_domain(domain_name)
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my config region: #{$CONFIG['Region']}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my region: #{swf.config.region}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my swf region: #{swf.config.simple_workflow_region}" }
     swf = AWS::SimpleWorkflow.new()
     domain = swf.domains[domain_name]
     unless domain.exists?
         swf.domains.create(domain_name, 10)
     end
+    
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my config region: #{$CONFIG['Region']}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my region: #{swf.config.region}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my swf region: #{swf.config.simple_workflow_region}" }
+    
     domain
   end
 
