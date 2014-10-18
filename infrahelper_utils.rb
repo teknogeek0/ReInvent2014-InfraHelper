@@ -29,7 +29,7 @@ $CONFIG = YAML.load_file(File.dirname(__FILE__)+"/IHQueueConfig.yml") unless def
 $IH_CONFIG = JSON.parse(File.read(File.dirname(__FILE__)+"/infrahelper.json"))
 
 # default region for all services
-AWS.config({:region => "#{$CONFIG['Region']}"})
+AWS.config({region: "#{$CONFIG['Region']}"})
 
 ## set up our loggers
 logFile = File.open('/var/log/infrahelper/app.log', File::WRONLY | File::APPEND | File::CREAT)
@@ -42,8 +42,12 @@ end
 # These are utilities that are common
 module SharedUtils
 
-  AWS.config({:region => "#{$CONFIG['Region']}"})
+
   def setup_domain(domain_name)
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my config region: #{$CONFIG['Region']}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my region: #{swf.config.region}" }
+    $logger.info('utils') { "DEBUG: inside setup_domain. this is my swf region: #{swf.config.simple_workflow_region}" }
     swf = AWS::SimpleWorkflow.new()
     domain = swf.domains[domain_name]
     unless domain.exists?
@@ -73,8 +77,8 @@ end
 class InfraHelperUtils
   include SharedUtils
 
-  WF_VERSION = "1.2"
-  ACTIVITY_VERSION = "1.2"
+  WF_VERSION = "1.3"
+  ACTIVITY_VERSION = "1.3"
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
   DOMAIN = $IH_CONFIG["domain"]["name"]
@@ -84,6 +88,10 @@ class InfraHelperUtils
   end
 
   def activity_worker
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my config region: #{$CONFIG['Region']}" }
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my region: #{swf.config.region}" }
+    $logger.info('utils') { "DEBUG: inside activity_worker. this is my swf region: #{swf.config.simple_workflow_region}" }
     build_activity_worker(@domain, InfraHelperActivity, ACTIVITY_TASKLIST)
   end
 
