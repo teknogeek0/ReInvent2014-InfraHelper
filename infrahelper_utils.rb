@@ -83,8 +83,8 @@ class InfraHelperUtils
   end
 
   def build_workflow_client(domain, options_hash)
-    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my region: #{domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
+    $logger.info('utils') { "DEBUG: inside build_workflow_client. this is my region: #{domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside build_workflow_client. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::workflow_client(domain.client, domain) { options_hash }
   end
 
