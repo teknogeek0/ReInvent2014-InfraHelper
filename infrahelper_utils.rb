@@ -39,9 +39,15 @@ $logger.formatter = proc do |severity, datetime, progname, msg|
    "#{Socket.gethostname} [#{datetime.strftime('%d/%b/%Y:%H:%M:%S %z')}] #{progname} #{severity} ##{Process.pid}: #{msg}\n"
 end
 
-# These are utilities that are common
-module SharedUtils
 
+class InfraHelperUtils
+  
+  AWS.config({region: "#{$CONFIG['Region']}"})
+  WF_VERSION = "1.3"
+  ACTIVITY_VERSION = "1.3"
+  WF_TASKLIST = "infrahelper_workflow_task_list"
+  ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
+  DOMAIN = $IH_CONFIG["domain"]["name"]
 
   def setup_domain(domain_name)
     swf = AWS::SimpleWorkflow.new()
@@ -73,18 +79,6 @@ module SharedUtils
   def build_workflow_client(domain, options_hash)
     AWS::Flow::workflow_client(domain.client, domain) { options_hash }
   end
-end
-
-
-class InfraHelperUtils
-  include SharedUtils
-
-  WF_VERSION = "1.3"
-  ACTIVITY_VERSION = "1.3"
-  WF_TASKLIST = "infrahelper_workflow_task_list"
-  ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
-  DOMAIN = $IH_CONFIG["domain"]["name"]
-  AWS.config({region: "#{$CONFIG['Region']}"})
 
   def initialize
     @domain = setup_domain(DOMAIN)
