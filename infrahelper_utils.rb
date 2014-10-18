@@ -65,23 +65,33 @@ class InfraHelperUtils
   end
 
   def build_workflow_worker(domain, klass, task_list)
+    $logger.info('utils') { "DEBUG: inside build_workflow_worker. this is my region: #{domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside build_workflow_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::WorkflowWorker.new(domain.client, domain, task_list, klass)
   end
 
   def build_generic_activity_worker(domain, task_list)
+    $logger.info('utils') { "DEBUG: inside build_generic_activity_worker. this is my region: #{domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside build_generic_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::ActivityWorker.new(domain.client, domain, task_list)
   end
 
   def build_activity_worker(domain, klass, task_list)
+    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my region: #{domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::ActivityWorker.new(domain.client, domain, task_list, klass)
   end
 
   def build_workflow_client(domain, options_hash)
+    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my region: #{domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::workflow_client(domain.client, domain) { options_hash }
   end
 
   def initialize
     @domain = setup_domain(DOMAIN)
+    $logger.info('utils') { "DEBUG: inside initialize. this is my region: #{@domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside initialize. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
   end
 
   def activity_worker
@@ -93,10 +103,14 @@ class InfraHelperUtils
   end
 
   def workflow_worker
+    $logger.info('utils') { "DEBUG: inside workflow_worker. this is my region: #{@domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside workflow_worker. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_workflow_worker(@domain, InfraHelperWorkflow, WF_TASKLIST)
   end
 
   def workflow_client
+    $logger.info('utils') { "DEBUG: inside workflow_client. this is my region: #{@domain.client.config.region}" }
+    $logger.info('utils') { "DEBUG: inside workflow_client. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_workflow_client(@domain, from_class: "InfraHelperWorkflow")
   end
 end
