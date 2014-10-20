@@ -36,29 +36,29 @@ class InfraHelperActivity
 
   # This activity can be used to assign an EIP to an instance
   def assignEIP(myInstance)
-  	$logger.info('assignEIP_activity') { "Assigning an EIP to instance ID: #{myInstance}" } unless is_replaying?
+  	$logger.info('assignEIP_activity') { "Assigning an EIP to instance ID: #{myInstance}" }
   	##assume something is happening here
-  	$logger.info('assignEIP_activity') { "Finished activity" } unless is_replaying?
+  	$logger.info('assignEIP_activity') { "Finished activity" }
   end
 
   # This activity can be used to set the SRC/DEST flag
   def setSrcDest(myInstance)
-    $logger.info('setSrcDest_activity') { "Setting SRC/DEST for instance ID: #{myInstance}" } unless is_replaying?
+    $logger.info('setSrcDest_activity') { "Setting SRC/DEST for instance ID: #{myInstance}" }
     ##assume something is happening here
-  	$logger.info('setSrcDest_activity') { "Finished activity" } unless is_replaying?
+  	$logger.info('setSrcDest_activity') { "Finished activity" }
   end
 
   # This activity can be used to set the instance as the default route for a route table
-  def setRoute(myASG, myInstance)
-  	routeEndPoint = myInstance
-  	group = auto_scaling.groups[myASG]
+  def setRoute(options)
+  	routeEndPoint = options[:myInstance]
+  	group = auto_scaling.groups[options[:myASG]]
 		group.ec2_instances.each do |instance|
   		puts instance.id
   		## we'll do something useful here
 		end
-    $logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" } unless is_replaying?
+    $logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" }
     ##assume something is happening here
-  	$logger.info('setRoute_activity') { "Finished activity" } unless is_replaying?
+  	$logger.info('setRoute_activity') { "Finished activity" }
   end
 
 end
@@ -66,7 +66,3 @@ end
 # Start an ActivityWorker to work on the InfraHelperActivity tasks
 InfraHelperUtils.new.activity_worker.start if $0 == __FILE__
 $logger.info('activities') { "Starting our activity process against SWF Domain: '#{$IH_CONFIG["domain"]["name"]}'" }
-#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my config region: #{$CONFIG['Region']}" }
-#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my region: #{swf.config.region}" }
-#$logger.info('utils') { "DEBUG: inside InfraHelperActivity. this is my swf region: #{swf.config.simple_workflow_region}" }
