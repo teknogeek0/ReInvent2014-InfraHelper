@@ -51,11 +51,11 @@ class InfraHelperWorkflow
       # asynchronously by using the send_async method
       futures << client.send_async(:assignEIP, options[:myInstance])
       futures << client.send_async(:setSrcDest, options[:myInstance])
-      $logger.info('workflow') { "Try and set this instance to be the default route. Will fail if another instance is already doing this." } unless is_replaying?
-      futures << client.send_async(:setRoute, options[:myASG, :myInstance])
+      $logger.info('workflow') { "Try and set instance: #{options[:myInstance]} to be the default route. Will fail if another instance is already doing this." } unless is_replaying?
+      futures << client.send_async(:setRoute, options)
     elsif options[:myEvent]=="autoscaling:EC2_INSTANCE_TERMINATE"
       $logger.info('workflow') { "Try and set this instance to be the default route. Will fail if another instance is already doing this." } unless is_replaying?
-      futures << client.send_async(:setRoute, options[:myASG, :myInstance])
+      futures << client.send_async(:setRoute, options)
     end
 
     $logger.info('workflow') { "Waiting for activities to complete" } unless is_replaying?
