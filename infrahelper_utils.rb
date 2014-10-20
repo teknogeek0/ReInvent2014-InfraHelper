@@ -43,8 +43,8 @@ end
 class InfraHelperUtils
   
   AWS.config({region: "#{$CONFIG['Region']}"})
-  WF_VERSION = "1.5"
-  ACTIVITY_VERSION = "1.5"
+  WF_VERSION = "1.0"
+  ACTIVITY_VERSION = "1.0"
   WF_TASKLIST = "infrahelper_workflow_task_list"
   ACTIVITY_TASKLIST = "infrahelper_activity_task_list"
   DOMAIN = $IH_CONFIG["domain"]["name"]
@@ -56,61 +56,38 @@ class InfraHelperUtils
         swf.domains.create(domain_name, 10)
     end
     
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my config region: #{$CONFIG['Region']}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my region: #{swf.config.region}" }
-    $logger.info('utils') { "DEBUG: inside setup_domain. this is my swf region: #{swf.config.simple_workflow_region}" }
-    
     domain
   end
 
   def build_workflow_worker(domain, klass, task_list)
-    $logger.info('utils') { "DEBUG: inside build_workflow_worker. this is my region: #{domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside build_workflow_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::WorkflowWorker.new(domain.client, domain, task_list, klass)
   end
 
   def build_generic_activity_worker(domain, task_list)
-    $logger.info('utils') { "DEBUG: inside build_generic_activity_worker. this is my region: #{domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside build_generic_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::ActivityWorker.new(domain.client, domain, task_list)
   end
 
   def build_activity_worker(domain, klass, task_list)
-    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my region: #{domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside build_activity_worker. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::ActivityWorker.new(domain.client, domain, task_list, klass)
   end
 
   def build_workflow_client(domain, options_hash)
-    $logger.info('utils') { "DEBUG: inside build_workflow_client. this is my region: #{domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside build_workflow_client. this is my swf region: #{domain.client.config.simple_workflow_region}" }
     AWS::Flow::workflow_client(domain.client, domain) { options_hash }
   end
 
   def initialize
     @domain = setup_domain(DOMAIN)
-    $logger.info('utils') { "DEBUG: inside initialize. this is my region: #{@domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside initialize. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
   end
 
   def activity_worker
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my config region: #{$CONFIG['Region']}" }
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my domain: #{$IH_CONFIG["domain"]["name"]}" }
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my region: #{@domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside activity_worker. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_activity_worker(@domain, InfraHelperActivity, ACTIVITY_TASKLIST)
   end
 
   def workflow_worker
-    $logger.info('utils') { "DEBUG: inside workflow_worker. this is my region: #{@domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside workflow_worker. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_workflow_worker(@domain, InfraHelperWorkflow, WF_TASKLIST)
   end
 
   def workflow_client
-    $logger.info('utils') { "DEBUG: inside workflow_client. this is my region: #{@domain.client.config.region}" }
-    $logger.info('utils') { "DEBUG: inside workflow_client. this is my swf region: #{@domain.client.config.simple_workflow_region}" }
     build_workflow_client(@domain, from_class: "InfraHelperWorkflow")
   end
 end

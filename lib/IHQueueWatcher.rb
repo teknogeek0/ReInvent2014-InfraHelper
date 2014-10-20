@@ -16,7 +16,8 @@
 
 ## require what we'll need
 require_relative '../infrahelper_utils'
-
+require_relative 'infrahelper_activity'
+require_relative 'infrahelper_workflow'
 
 ## load from config our environment variables
 ##CONFIG = YAML.load_file("IHQueueConfig.yml") unless defined? CONFIG

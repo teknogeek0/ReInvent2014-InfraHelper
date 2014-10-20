@@ -38,7 +38,7 @@ class InfraHelperWorkflow
   activity_client(:client) { { from_class: "InfraHelperActivity" } }
 
   # This is the entry point for the workflow
-  def fix_NAT options
+  def fix_NAT(options)
 
   	$logger.info('workflow') { "Workflow has started" } unless is_replaying?
     # This array will hold all futures that are created when asynchronous
