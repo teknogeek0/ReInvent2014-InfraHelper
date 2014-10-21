@@ -68,6 +68,7 @@ class InfraHelperActivity
 
   # This activity can be used to set the instance as the default route for a route table
   def setRoute(options)
+    $logger.info('setRoute_activity') { "Starting setRoute" }
     instance = ec2.instances[options[:myInstance]]
     thisEvent = options[:myEvent]
     thisASG = options[:myASG]
@@ -87,7 +88,7 @@ class InfraHelperActivity
             ##find out if the current NAT endpoint is in an ASG
             if route.destination_cidr_block == "0.0.0.0/0"
               if route.state{:active}
-                if auto_scaling.instances[route.target.id].exists
+                if auto_scaling.instances[route.target.id].exists?
                   if !auto_scaling.instances[route.target.id].auto_scaling_group_name == thisASG
                     ##this means we have a working NAT, but its not part of this ASG, which we want it to be
                     clearResetRoute(rts, route, instance)
