@@ -79,6 +79,28 @@ class InfraHelperActivity
       $logger.info('setRoute_activity') { "We can't find the Private Route based on Tag. Something went wrong" }
     else
       rt.each do |rts|
+
+        if rts.routes.count < 2
+          $logger.info('setRoute_activity') { "Right now we don't have a default route. That's no good!" }
+          ##we shouldn't ever be here.
+          ##if we are here we can assume that something deleted our default route and wee need it back
+          ##create the route asap!
+          delRoute = "false"
+          if thisEvent=="autoscaling:EC2_INSTANCE_LAUNCH"
+            clearResetRoute(rts, delRoute, instance)
+            next
+          elsif thisEvent=="autoscaling:EC2_INSTANCE_TERMINATE"
+            ##need to figure out who is left.
+            group = auto_scaling.groups[thisASG]
+            group.auto_scaling_instances.each do |asgInstance|
+              if asgInstance.id != instance.id
+                clearResetRoute(rts, delRoute, asgInstance.ec2_instance)
+                next
+              end
+            end
+          end
+        end
+
         rts.routes.each do |route|
           if  route.target.id == "local"
             next
@@ -143,8 +165,10 @@ class InfraHelperActivity
   end
 
   def clearResetRoute(rts, route, instance)
-    $logger.info('setRoute_activity') { "Deleting old route." }
-    route.delete
+    if route != "false"
+      $logger.info('setRoute_activity') { "Deleting old route." }
+      route.delete
+    end
     $logger.info('setRoute_activity') { "Setting our default route on the Private Route Table: #{rts.id} to NAT instance:#{instance.id}" }
     rts.create_route("0.0.0.0/0", {:instance => instance})
   end
