@@ -118,13 +118,14 @@ class InfraHelperActivity
                   break
                 end
               end
+            else
+              $logger.info('setRoute_activity') { "No need to replace NAT. Current instance: #{route.target.id} is fine" }
             end
           end
         end
       end
     end
 
-    $logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" }
     ##assume something is happening here
   	$logger.info('setRoute_activity') { "Finished activity" }
   end
@@ -144,7 +145,7 @@ class InfraHelperActivity
   def clearResetRoute(rts, route, instance)
     $logger.info('setRoute_activity') { "Deleting old route." }
     route.delete
-    $logger.info('setRoute_activity') { "Setting our default route on the Private Route Table to NAT instance:#{instance.id}" }
+    $logger.info('setRoute_activity') { "Setting our default route on the Private Route Table: #{rts.id} to NAT instance:#{instance.id}" }
     rts.create_route("0.0.0.0/0", {:instance => instance})
   end
 
