@@ -37,21 +37,39 @@ class InfraHelperActivity
   # This activity can be used to assign an EIP to an instance
   def assignEIP(myInstance)
   	$logger.info('assignEIP_activity') { "Assigning an EIP to instance ID: #{myInstance}" }
-  	##assume something is happening here
+  	instance = ec2.instances[myInstance]
+
+    eips = ec2.elastic_ips.select{|ip| !ip.associated? and ip.vpc?}
+    if eips.empty?
+      $logger.info('assignEIP_activity') { "No free VPC EIPs found, creating one." }
+      eip = ec2.elastic_ips.create(:vpc => true)
+      assocEIP(eip, instance)
+    else
+      eips.each do |ips|
+        $logger.info('assignEIP_activity') { "Found a free VPC EIPs found, associating it to our instance." }
+        assocEIP(ips, instance)
+        break
+      end
+    end
   	$logger.info('assignEIP_activity') { "Finished activity" }
   end
 
   # This activity can be used to set the SRC/DEST flag
   def setSrcDest(myInstance)
     $logger.info('setSrcDest_activity') { "Setting SRC/DEST for instance ID: #{myInstance}" }
-    ##assume something is happening here
-  	$logger.info('setSrcDest_activity') { "Finished activity" }
+    ec2.instances[myInstance].source_dest_check = false
+    if !ec2.instances[myInstance].source_dest_check
+      $logger.info('setSrcDest_activity') { "Finished activity" }
+    else
+      ## should probably write smarter failure stuff...
+      $logger.info('setSrcDest_activity') { "FAILED activity" }
+    end
   end
 
   # This activity can be used to set the instance as the default route for a route table
   def setRoute(options)
   	routeEndPoint = options[:myInstance]
-  	group = auto_scaling.groups[options[:myASG]]
+  	group = ec2.auto_scaling.groups[options[:myASG]]
 		group.ec2_instances.each do |instance|
   		puts instance.id
   		## we'll do something useful here
@@ -59,6 +77,18 @@ class InfraHelperActivity
     $logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" }
     ##assume something is happening here
   	$logger.info('setRoute_activity') { "Finished activity" }
+  end
+
+  def ec2
+    # Initialize the S3 client if it's not already initialized
+    @ec2 ||= AWS::EC2.new
+  end
+
+  def assocEIP(eip, instance)
+    instance.associate_elastic_ip(eip)
+    if eip.associated?
+      $logger.info('assignEIP_activity') { "Successfully assigned EIP: #{eip} to Instance: #{instance}" }
+    end
   end
 
 end
