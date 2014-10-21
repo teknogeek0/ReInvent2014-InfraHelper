@@ -108,7 +108,7 @@ class InfraHelperActivity
               end
             end
           elsif thisEvent=="autoscaling:EC2_INSTANCE_TERMINATE"
-            if route.target.id == instance.id
+            if route.target.id == instance.id or route.target.id.start_with?("eni-") or route.state{:blackhole}
               $logger.info('setRoute_activity') { "Looks like our active NAT died, we need to replace it" } 
               ##need to figure out who is left.
               group = auto_scaling.groups[thisASG]
