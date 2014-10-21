@@ -68,12 +68,61 @@ class InfraHelperActivity
 
   # This activity can be used to set the instance as the default route for a route table
   def setRoute(options)
-  	routeEndPoint = options[:myInstance]
-  	group = ec2.auto_scaling.groups[options[:myASG]]
-		group.ec2_instances.each do |instance|
-  		puts instance.id
-  		## we'll do something useful here
-		end
+    instance = ec2.instances[options[:myInstance]]
+    thisEvent = options[:myEvent]
+    thisASG = options[:myASG]
+    auto_scaling = AWS::AutoScaling.new
+
+    rt = ec2.route_tables.with_tag("Network","Private Route")
+    if rt.first.nil?
+      $logger.info('setRoute_activity') { "We can't find the Private Route based on Tag. Something went wrong" }
+    else
+      rt.each do |rts|
+        rts.routes.each do |route|
+          if  route.target.id == "local"
+            next
+          end
+
+          if thisEvent=="autoscaling:EC2_INSTANCE_LAUNCH"
+            ##find out if the current NAT endpoint is in an ASG
+            if route.destination_cidr_block == "0.0.0.0/0"
+              if route.state{:active}
+                if auto_scaling.instances[route.target.id].exists
+                  if !auto_scaling.instances[route.target.id].auto_scaling_group_name == thisASG
+                    ##this means we have a working NAT, but its not part of this ASG, which we want it to be
+                    clearResetRoute(rts, route, instance)
+                  else
+                    ##this means we have an instance, its part of our same ASG, and it appears healthy already
+                    $logger.info('setRoute_activity') { "No need to replace NAT. Current instance: #{route.target.id} is fine" }
+                  end
+                else
+                  ##we assume then that the current nat is not in an ASG and replace
+                  clearResetRoute(rts, route, instance)
+                end
+              elsif route.state{:blackhole}
+                ##ok, looks like our set instance is down
+                clearResetRoute(rts, route, instance)
+              else
+                $logger.info('setRoute_activity') { "If we got here we somehow got an invalid route.state! RUH ROH?" }
+              end
+            end
+          elsif thisEvent=="autoscaling:EC2_INSTANCE_TERMINATE"
+            if route.target.id == instance.id
+              $logger.info('setRoute_activity') { "Looks like our active NAT died, we need to replace it" } 
+              ##need to figure out who is left.
+              group = auto_scaling.groups[thisASG]
+              group.auto_scaling_instances.each do |asgInstance|
+                if asgInstance.id != instance.id
+                  clearResetRoute(rts, route, asgInstance.ec2_instance)
+                  break
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
     $logger.info('setRoute_activity') { "Set instance as default route for RouteTable: #{routeEndPoint}" }
     ##assume something is happening here
   	$logger.info('setRoute_activity') { "Finished activity" }
@@ -87,8 +136,15 @@ class InfraHelperActivity
   def assocEIP(eip, instance)
     instance.associate_elastic_ip(eip)
     if eip.associated?
-      $logger.info('assignEIP_activity') { "Successfully assigned EIP: #{eip} to Instance: #{instance}" }
+      $logger.info('assignEIP_activity') { "Successfully assigned EIP: #{eip} to Instance: #{instance.id}" }
     end
+  end
+
+  def clearResetRoute(rts, route, instance)
+    $logger.info('setRoute_activity') { "Deleting old route." }
+    route.delete
+    $logger.info('setRoute_activity') { "Setting our default route on the Private Route Table to NAT instance:#{instance.id}" }
+    rts.create_route("0.0.0.0/0", {:instance => instance})
   end
 
 end
